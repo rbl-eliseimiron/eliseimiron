@@ -22,7 +22,7 @@ export default function CodeBlogPage() {
       ) : (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
-            <BlogCard key={post.slug} post={post} href={`/code/blog/${post.slug}`} />
+            <BlogCard key={post.slug} post={post} section="code" href={`/code/blog/${post.slug}`} />
           ))}
         </div>
       )}
