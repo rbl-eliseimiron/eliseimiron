@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/container";
-import { getAllPostSlugs, getPostBySlug } from "@/lib/mdx";
+import { TagArchive } from "@/components/tag-archive";
+import {
+  getAllPostSlugs,
+  getAllTagParams,
+  getPostBySlug,
+  getPostsByTag,
+  parseTagParam,
+  tagHref,
+} from "@/lib/mdx";
 
 export function generateStaticParams() {
-  return getAllPostSlugs("drive").map((slug) => ({ slug }));
+  const postSlugs = getAllPostSlugs("drive");
+  const tagSlugs = getAllTagParams("drive");
+  return [...postSlugs, ...tagSlugs].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -13,6 +24,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+
+  const tag = parseTagParam(slug);
+  if (tag) return { title: `#${tag}` };
+
   const post = await getPostBySlug("drive", slug);
   if (!post) return {};
   return { title: post.meta.title, description: post.meta.excerpt };
@@ -24,6 +39,14 @@ export default async function DriveBlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  const tag = parseTagParam(slug);
+  if (tag) {
+    const posts = getPostsByTag("drive", tag);
+    if (posts.length === 0) notFound();
+    return <TagArchive section="drive" tag={tag} posts={posts} />;
+  }
+
   const post = await getPostBySlug("drive", slug);
   if (!post) notFound();
 
@@ -41,10 +64,14 @@ export default async function DriveBlogPostPage({
 
         {meta.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {meta.tags.map((tag) => (
-              <span key={tag} className="rounded-full bg-accent/10 px-2.5 py-1 text-xs text-accent">
-                #{tag}
-              </span>
+            {meta.tags.map((postTag) => (
+              <Link
+                key={postTag}
+                href={tagHref("drive", postTag)}
+                className="rounded-full bg-accent/10 px-2.5 py-1 text-xs text-accent transition-colors hover:bg-accent/20"
+              >
+                #{postTag}
+              </Link>
             ))}
           </div>
         )}

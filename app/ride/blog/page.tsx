@@ -22,7 +22,7 @@ export default function RideBlogPage() {
       ) : (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
-            <BlogCard key={post.slug} post={post} href={`/ride/blog/${post.slug}`} />
+            <BlogCard key={post.slug} post={post} section="ride" href={`/ride/blog/${post.slug}`} />
           ))}
         </div>
       )}

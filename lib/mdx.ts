@@ -57,6 +57,40 @@ export function getAllPostSlugs(section: SectionSlug): string[] {
     .map((file) => file.replace(/\.mdx$/, ""));
 }
 
+const TAG_PARAM_PREFIX = "tag=";
+
+export function tagHref(section: SectionSlug, tag: string): string {
+  return `/${section}/blog/${TAG_PARAM_PREFIX}${encodeURIComponent(tag)}`;
+}
+
+/**
+ * Returns the decoded tag name if `slug` is a tag-archive param (e.g. "tag=munte"), otherwise
+ * null. Next.js re-encodes literal "=" in dynamic segments (e.g. "tag%3Dmunte"), so the whole
+ * slug is decoded first before checking the prefix.
+ */
+export function parseTagParam(slug: string): string | null {
+  let decoded = slug;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    // malformed percent-encoding — fall through and compare the raw slug
+  }
+  if (!decoded.startsWith(TAG_PARAM_PREFIX)) return null;
+  return decoded.slice(TAG_PARAM_PREFIX.length);
+}
+
+export function getAllTagParams(section: SectionSlug): string[] {
+  const tags = new Set<string>();
+  for (const post of getAllPostsMeta(section)) {
+    for (const tag of post.tags) tags.add(tag);
+  }
+  return Array.from(tags).map((tag) => `${TAG_PARAM_PREFIX}${encodeURIComponent(tag)}`);
+}
+
+export function getPostsByTag(section: SectionSlug, tag: string): PostMeta[] {
+  return getAllPostsMeta(section).filter((post) => post.tags.includes(tag));
+}
+
 export async function getPostBySlug(section: SectionSlug, slug: string) {
   const filePath = path.join(blogDir(section), `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
