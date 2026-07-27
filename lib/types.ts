@@ -35,6 +35,14 @@ export interface RouteItem {
   mapUrl?: string;
 }
 
+export interface SponsorItem {
+  id: string;
+  name: string;
+  /** Path under /public, e.g. "/images/sponsors/ride/example.png". */
+  logo: string;
+  href: string;
+}
+
 export interface PostMeta {
   slug: string;
   title: string;
