@@ -1,0 +1,28 @@
+---
+title: "De ce am ales Next.js App Router pentru acest site"
+date: "2026-02-10"
+excerpt: "Câteva motive tehnice din spatele alegerii arhitecturii pentru acest portofoliu."
+category: "Arhitectură"
+tags: ["nextjs", "react", "mdx"]
+---
+
+Articol placeholder pentru secțiunea **Code**, folosit pentru a valida pipeline-ul
+de MDX (parsare frontmatter, timp de citire calculat automat, randare server-side).
+
+## Motivația
+
+App Router permite componente server implicite, ceea ce simplifică citirea
+fișierelor MDX direct din sistemul de fișiere, fără un strat suplimentar de API.
+
+```ts
+export async function getPostBySlug(section: SectionSlug, slug: string) {
+  // citește fișierul .mdx și îl compilează la build/request time
+}
+```
+
+## Ce urmează
+
+- Migrarea articolelor reale dintr-un export WordPress (XML → MDX)
+- Adăugarea de componente MDX custom (embed-uri de cod, imagini optimizate)
+
+Setup-ul complet de dezvoltare — în [pagina de setup](/code/gear).

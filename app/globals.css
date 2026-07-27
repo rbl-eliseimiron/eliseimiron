@@ -1,26 +1,80 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Enables the `dark:` variant based on a `.dark` class instead of only OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0b0f14;
+  --muted-foreground: #52525b;
+  --border-color: #e4e4e7;
+  --surface: #f4f4f5;
+
+  /* Section brand colors */
+  --ride: #22c55e; /* fresh green */
+  --drive: #06b6d4; /* celestial teal-blue */
+  --code: #d946ef; /* magenta */
+
+  /* Neutral accent used outside any /ride, /drive, /code context (e.g. homepage chrome) */
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
+}
+
+.dark {
+  --background: #0a0a0f;
+  --foreground: #f4f4f5;
+  --muted-foreground: #a1a1aa;
+  --border-color: #27272a;
+  --surface: #18181b;
+}
+
+/* Context-aware accent: any subtree with data-section="ride|drive|code" inherits the
+   matching brand color through --accent, so shared components stay accent-agnostic. */
+[data-section="ride"] {
+  --accent: var(--ride);
+}
+[data-section="drive"] {
+  --accent: var(--drive);
+}
+[data-section="code"] {
+  --accent: var(--code);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border-color);
+  --color-surface: var(--surface);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-ride: var(--ride);
+  --color-drive: var(--drive);
+  --color-code: var(--code);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --animate-marquee: marquee 28s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
 }
